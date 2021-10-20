@@ -1,0 +1,28 @@
+{
+  "name": "获取抖店订单-无添加",
+  "version": "1.1",
+  "description": "获取抖店订单(无添加主义化妆品有限公司)",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": true
+  },
+  "permissions": ["webRequest","webRequestBlocking","activeTab","declarativeContent","storage"],
+  "optional_permissions": [],
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_title": "获取抖店订单(无添加主义化妆品有限公司)"
+  },
+  "content_scripts": [{
+    "matches": ["https://fxg.jinritemai.com/*"],
+    "css": ["css/contentScript.css"],
+    "js": ["js/jquery.min.js","js/contentScript.js"]
+  }],
+  "icons": {
+    "16": "images/data16.png",
+    "48": "images/data48.png",
+    "128": "images/data128.png"
+  },
+  "options_page": "options.html",
+  "devtools_page": "devtools.html"
+}

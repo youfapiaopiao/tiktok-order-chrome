@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .button {
+        color: #fff;
+        background-color: #409eff;
+        border-color: #409eff;
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        border: 1px solid #dcdfe6;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: 0.1s;
+        font-weight: 500;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+        margin: 20px auto 0;
+        margin-bottom: 20px;
+      }
+      .button:hover,
+      .button:focus {
+        background: #2d6efb;
+        border-color: #2d6efb;
+        color: #fff;
+      }
+      .button:active {
+        background: #ffffff;
+        border-color: #2d6efb;
+        color: #2d6efb;
+      }
+      .box {
+        display: none;
+        width: 300px;
+        height: 125px;
+        margin: 0px auto;
+      }
+
+      .box p {
+        text-align: center;
+        width: 100%;
+        float: left;
+        /*p标签默认有样式*/
+        margin: 0;
+        padding: 0;
+      }
+
+      .box div {
+        width: 30px;
+        height: 70px;
+        margin: 15px;
+        float: left;
+        background-color: hotpink;
+        border-radius: 10px;
+      }
+
+      .box div:nth-child(1) {
+        background-color: lightcoral;
+        /*缩、放 这是两次，所以是2*/
+        /*animation:loading 0.5s ease 0s 2 alternate;*/
+        animation: loading 0.5s ease 0s infinite alternate;
+      }
+      .box div:nth-child(2) {
+        background-color: darkorange;
+        animation: loading 0.5s ease 0.1s infinite alternate;
+      }
+      .box div:nth-child(3) {
+        background-color: lightcoral;
+        animation: loading 0.5s ease 0.2s infinite alternate;
+      }
+      .box div:nth-child(4) {
+        background-color: gold;
+        animation: loading 0.5s ease 0.3s infinite alternate;
+      }
+      .box div:nth-child(5) {
+        background-color: burlywood;
+        animation: loading 0.5s ease 0.4s infinite alternate;
+      }
+      .red {
+        color: red !important;
+      }
+
+      @keyframes loading {
+        from {
+          /*缩放y轴*/
+          transform: scaleY(1);
+        }
+
+        to {
+          transform: scaleY(0.5);
+        }
+      }
+      .export {
+        color: #409eff;
+        cursor: pointer;
+      }
+      #error {
+        color: red;
+        display: none;
+      }
+      .stop {
+        margin-left: 50px;
+      }
+      .page-num {
+        width: 100px;
+        -webkit-appearance: none;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        outline: none;
+        padding: 0 15px;
+        transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+        margin: 0px 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="info"></div>
+    <div id="result"></div>
+
+    <div style="margin: 20px auto 0; text-align: center">
+      <div>
+        <input
+          type="button"
+          value="获取订单"
+          title="点击后, 禁止进行刷新等页面操作"
+          class="button"
+          id="button"
+        /><input type="button" value="暂停" class="stop button" id="stop" />
+      </div>
+      <div class="box" id="loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div style="margin-bottom: 20px">
+        正在处理 : 第<span id="page" class="red" >0</span >页 第<span id="line" class="red">0</span>条 (从第<span class="red" id="start">0</span>页开始)
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center;margin-bottom: 10px;">
+        <input placeholder="OA账号" title="一般是姓名" type="text" class="page-num" id="userName" value="" /></span><input placeholder="OA密码" title="一般是手机号" type="password" class="page-num" id="password" value="" />
+      </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center;margin-bottom: 10px;">
+        导出<input type="number" class="page-num" id='pageLimit' value="100" />页
+      </div>
+      <div style="text-align: center;">
+        当前可导出<span id="all" class="red" >0</span >页
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center;margin-bottom: 10px;">
+        <input value="立即导出" title="不支持二次导出" type="button" class="button" id="export" />
+      </div>
+      <div id="error">您的账户存在安全风险, 请稍后再试</div>
+      <!-- <img class="contact" style="" src="./images/contact.png" /> -->
+      <div style="text-align: center;">有问题请联系技术部 !</div>
+    </div>
+    <script src="./panel.js"></script>
+  </body>
+</html>
