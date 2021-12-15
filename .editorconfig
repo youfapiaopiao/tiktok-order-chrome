@@ -25,6 +25,6 @@ trim_trailing_whitespace = true
 [*.{md,markdown}]
 trim_trailing_whitespace = false
 
-[*.{css,js,html,xml,xhtml,vue,json,yml,yaml,toml}]
+[*.{html,xml,xhtml,vue}]
 tab_width = 2
 indent_size = 2

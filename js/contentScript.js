@@ -1,6 +1,7 @@
 var isDev = false;
 
 var commonURL = isDev ? "https://kf.cc.cc" : "https://kf.wtjzy.com";
+var timeClick = 2000; //1000=1秒
 
 var isInit = true,
     initData = {},
@@ -19,6 +20,17 @@ function getInitData() {
         },
     });
 }
+
+function nextClick() {
+    $($view[viewIndex]).trigger("click");
+}
+
+function timeNextClick() {
+    setTimeout(function () {
+        nextClick();
+    }, timeClick);
+}
+
 getInitData();
 var $view = "",
     $copyButton = [],
@@ -30,8 +42,8 @@ var $view = "",
     allList = [],
     sendComplete = null,
     sendListComplete = null,
-    userName = '',
-    password = '',
+    userName = "",
+    password = "",
     currentPage = 0;
 
 var timeStamp = new Date().getTime();
@@ -77,45 +89,69 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     console.log("存在手动解密订单======================");
                     var orderIndex = 0; //订单的位置索引
                     $copyButton.each(function (index, value) {
-                        orderIndex = $(value).parents(".mortise-rich-table-row").index();
+                        orderIndex = $(value)
+                            .parents(".mortise-rich-table-row")
+                            .index();
                         // pageList[orderIndex].shop_order_id;
 
-                        $user_nickname = $(value).parent().parent().parent().parent().prev().text() ? $(value).parent().parent().parent().parent().prev().text() : '';
+                        $user_nickname = $(value) .parent() .parent() .parent() .parent() .prev() .text() ? $(value) .parent() .parent() .parent() .parent() .prev() .text() : "";
                         if ("" !== $user_nickname) {
                             //昵称
                             pageList[orderIndex].user_nickname = $user_nickname;
                         }
-                        $receiverInfo = $(value).parent().parent().text() ? $(value).parent().parent().text() : '';
-                        $receiverInfoArr = $receiverInfo.split('，');
-                        if (undefined !== $receiverInfoArr[0] && null !== $receiverInfoArr[0]) {
+                        $receiverInfo = $(value).parent().parent().text() ? $(value).parent().parent().text() : "";
+                        $receiverInfoArr = $receiverInfo.split("，");
+                        if (
+                            undefined !== $receiverInfoArr[0] &&
+                            null !== $receiverInfoArr[0]
+                        ) {
                             //收货人
-                            pageList[orderIndex].receiver_info.post_receiver = $receiverInfoArr[0];
+                            pageList[orderIndex].receiver_info.post_receiver =
+                                $receiverInfoArr[0];
                         }
-                        if (undefined !== $receiverInfoArr[1] && null !== $receiverInfoArr[1]) {
+                        if (
+                            undefined !== $receiverInfoArr[1] &&
+                            null !== $receiverInfoArr[1]
+                        ) {
                             //收货电话
-                            pageList[orderIndex].receiver_info.post_tel = $receiverInfoArr[1];
+                            pageList[orderIndex].receiver_info.post_tel =
+                                $receiverInfoArr[1];
                         }
-                        if (undefined !== $receiverInfoArr[2] && null !== $receiverInfoArr[2]) {
+                        if (
+                            undefined !== $receiverInfoArr[2] &&
+                            null !== $receiverInfoArr[2]
+                        ) {
                             //收货地址
-                            var detail = '';
+                            var detail = "";
                             for (let i = 2; i < $receiverInfoArr.length; i++) {
                                 //有可能","不止两个,将后面的拼接
                                 detail += $receiverInfoArr[i];
                             }
                             if ("" !== detail) {
-                                for (const k in pageList[orderIndex].receiver_info.post_addr) {
+                                for (const k in pageList[orderIndex]
+                                    .receiver_info.post_addr) {
                                     //去除省市等已知信息,得到具体的街道
-                                    if (pageList[orderIndex].receiver_info.post_addr[k].name) {
-                                        detail = detail.replace(pageList[orderIndex].receiver_info.post_addr[k].name, '');
+                                    if (
+                                        pageList[orderIndex].receiver_info
+                                            .post_addr[k].name
+                                    ) {
+                                        detail = detail.replace(
+                                            pageList[orderIndex].receiver_info
+                                                .post_addr[k].name,
+                                            ""
+                                        );
                                     }
                                 }
-                                pageList[orderIndex].receiver_info.post_addr.detail = detail.trim();
+                                pageList[
+                                    orderIndex
+                                ].receiver_info.post_addr.detail =
+                                    detail.trim();
                             }
                         }
                     });
                 }
-                //处理已经手动点击"小眼睛"的数据==================================end
 
+                //处理已经手动点击"小眼睛"的数据==================================end
 
                 allList = [...allList, ...pageList];
 
@@ -123,15 +159,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 if ($view.length > 0) {
                     viewIndex = 0; //从第1个"小眼睛"开始点击
                     checkViewData(
-                        pageList[ $($view[viewIndex]) .parents(".mortise-rich-table-row") .index() ],
-                        function () {
-                            $($view[viewIndex]).trigger("click");
-                        }
+                        pageList[
+                            $($view[viewIndex])
+                                .parents(".mortise-rich-table-row")
+                                .index()
+                        ],
+                        nextClick
                     );
                 } else {
                     setTimeout(function () {
                         composeData();
-                    }, 1000);
+                    }, timeClick);
                 }
             } else {
                 sendListComplete("不处理");
@@ -140,18 +178,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }
         }
     } else if (request.type == "user") {
-
-
         if (runFlag) {
             sendComplete = sendResponse;
-            var response = request.data.response && JSON.parse(request.data.response), order_id = "";
+            var response =
+                    request.data.response && JSON.parse(request.data.response),
+                order_id = "";
             order_id = request.data.queryString.filter((item, index) => {
                 return item.name == "order_id";
             })[0].value;
             if (response.data) {
-
-            console.log('解密请求====================');
-            console.log(response.data);
+                console.log("解密请求====================");
+                console.log(response.data);
 
                 var receive_info = response.data.receive_info;
                 if (response.data.nick_name) {
@@ -177,6 +214,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 userInfo[order_id] = receive_info;
                 sendComplete(viewIndex);
                 nextView(order_id);
+            } else if (request.action) {
+                //账户存在安全风险,依然点击下一页
+                sendComplete(viewIndex);
+                nextView(order_id);
             }
         }
     } else if (request == "stop") {
@@ -191,6 +232,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         userName = String(request.userName);
         password = String(request.password);
         exportList();
+    } else if (request.type == "nextClick") {
+
     }
     return true;
 });
@@ -204,20 +247,27 @@ function nextView(order_id) {
             pageList[
                 $($view[viewIndex]).parents(".mortise-rich-table-row").index()
             ],
-            function () {
-                console.log("点击下一个小眼睛=======================");
-                setTimeout(function () {
-                    $($view[viewIndex]).trigger("click");
-                }, 1000);
-            }
+            timeNextClick
         );
     }
 }
 
-function checkViewData(row, callback) {
+function checkViewData(row, func) {
     var param = {
-        createTime: (undefined === row || null === row || undefined === row.create_time || null === row.create_time) ? '' : row.create_time,
-        shopOrderId: (undefined === row || null === row || undefined === row.shop_order_id || null === row.shop_order_id) ? '' : row.shop_order_id,
+        createTime:
+            undefined === row ||
+            null === row ||
+            undefined === row.create_time ||
+            null === row.create_time
+                ? ""
+                : row.create_time,
+        shopOrderId:
+            undefined === row ||
+            null === row ||
+            undefined === row.shop_order_id ||
+            null === row.shop_order_id
+                ? ""
+                : row.shop_order_id,
         douShopId: Number(initData.toutiao_id),
     };
     $.ajax({
@@ -231,13 +281,13 @@ function checkViewData(row, callback) {
                 userInfo[res.data.shopOrderId] = res.data.receiverInfo;
                 nextView(res.data.shopOrderId);
             } else {
-                callback && callback();
+                console.log("点击下一个眼睛======================");
+                func();
             }
         },
     });
 }
 function composeData(isComplete) {
-
     let ids = Object.keys(userInfo);
     console.log("请求后端======================");
     console.log(pageList);
@@ -276,7 +326,9 @@ function composeData(isComplete) {
                 if (isComplete) {
                     exportList();
                 } else {
-                    console.log("当前页上传完成，点击下一页=============================");
+                    console.log(
+                        "当前页上传完成，点击下一页============================="
+                    );
                     handleClick();
                 }
             },
@@ -300,7 +352,7 @@ function exportList() {
         douShopId: Number(initData.toutiao_id),
         douShopName: initData.shop_name,
         username: userName.trim(),
-        password: password
+        password: password,
     };
     const queryString = Object.keys(param)
         .map(
@@ -352,15 +404,20 @@ function handleFirstClick(page) {
     $clickPage.trigger("click");
 }
 
-
 /**
  * 点击下一页
  * @param         {*}
  * @return        {*}
  */
 function handleClick() {
-    var totalNum = $(".auxo-pagination .auxo-pagination-total-text span") .text() .replace(/[^0-9]/gi, "");
-    itemNum = $( ".auxo-pagination .auxo-select-selector .auxo-select-selection-item" ) .text() .replace(/[^0-9]/gi, "");
+    var totalNum = $(".auxo-pagination .auxo-pagination-total-text span")
+        .text()
+        .replace(/[^0-9]/gi, "");
+    itemNum = $(
+        ".auxo-pagination .auxo-select-selector .auxo-select-selection-item"
+    )
+        .text()
+        .replace(/[^0-9]/gi, "");
     var pageNum = Math.ceil(totalNum / itemNum);
     pageNum = pageNum > pageLimit ? pageLimit : pageNum;
     if (currentPage < pageNum) {

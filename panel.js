@@ -62,7 +62,8 @@ channel.onMessage.addListener(result => {
   const { method, queryString, url, response } = data;
   // document.querySelector('#result').innerHTML += url + '<br>';
   // if(url.indexOf('api/order/searchlist')> -1){
-  if ( url.indexOf("api/order/searchlist") > -1 ) {
+    if (url.indexOf("api/order/searchlist") > -1) {
+      //点击下一页后,api的返回
     sendMessageToContentScript({type:'list',data:response,queryString}, response => {
         console.log(response)
         if (response == '完成导出') {
@@ -80,22 +81,26 @@ channel.onMessage.addListener(result => {
           document.querySelector("#line").innerHTML = 0
         };
     });
-  }else if(url.indexOf("receiveinfo") > -1 ){
-    if(JSON.parse(data.response).msg == '您的账户存在安全风险，请稍后再试' ){
-      document.getElementById('error').style.display = "block";
-      document.getElementById('loading').style.display = "none";
-    }else{
-      sendMessageToContentScript({type:'user',data:data}, response => {
-        console.log(response)
-          if (response == '完成导出') {
-              document.getElementById('loading').style.display = "none";
-              document.querySelector("#all").innerHTML = page
-          }else{
-            document.querySelector("#line").innerHTML = (undefined === response || null === response) ? 0 : response
-          };
+  } else if (url.indexOf("receiveinfo") > -1) {
+      //点击眼睛后,api的返回
+    // if(JSON.parse(data.response).msg.indexOf("账户存在安全风险") > -1){
+    //         document.getElementById('loading').style.display = "none";
+    //         document.getElementById('error').style.display = "block";
+    // }
 
-        });
-    }
+    sendMessageToContentScript(
+        JSON.parse(data.response).msg.indexOf("账户存在安全风险") > -1 ? { type: 'user', action: 'next', data: data } : { type: 'user', data: data },
+        response => {
+            console.log(response)
+            if (response == '完成导出') {
+                document.getElementById('loading').style.display = "none";
+                document.querySelector("#all").innerHTML = page
+            }else{
+                document.querySelector("#line").innerHTML = (undefined === response || null === response) ? 0 : response
+            };
+
+        }
+    );
 
   }
 });
